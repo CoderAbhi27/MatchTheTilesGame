@@ -116,12 +116,12 @@ class GameActivity : AppCompatActivity() {
         }
 
 
-        if(matchedCount==size) GameResult(true)
-        else if(movesLeft<=0) GameResult(false)
+        if(matchedCount==size) gameResult(true)
+        else if(movesLeft<=0) gameResult(false)
     }
 
 
-    private fun GameResult(result: Boolean) {
+    private fun gameResult(result: Boolean) {
         if(flag==1) return
         if(result){
             val builder = AlertDialog.Builder(this)
