@@ -1,5 +1,6 @@
 package com.example.matchthetilesgame
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -13,26 +14,27 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val etname : TextView = findViewById(R.id.editTextPersonName)
-        val radioEasy : RadioButton = findViewById(R.id.easyRadioButton)
-        val radioMedium : RadioButton = findViewById(R.id.mediumRadioButton)
-        val radioHard : RadioButton = findViewById(R.id.hardRadioButton)
-        val buttonStartGame : Button = findViewById(R.id.buttonStartGame)
+        val etName: TextView = findViewById(R.id.editTextPersonName)
+        val radioEasy: RadioButton = findViewById(R.id.easyRadioButton)
+        val radioMedium: RadioButton = findViewById(R.id.mediumRadioButton)
+        val radioHard: RadioButton = findViewById(R.id.hardRadioButton)
+        val buttonStartGame: Button = findViewById(R.id.buttonStartGame)
 
-        buttonStartGame.setOnClickListener{
-            if(radioEasy.isChecked){
+        buttonStartGame.setOnClickListener {
+            val name = etName.text.toString()
+            if (radioEasy.isChecked) {
                 val intent = Intent(this, GameActivity::class.java)
-                intent.putExtra("name", etname.text.toString())
+                intent.putExtra("name", name)
                 intent.putExtra("difficulty", "Easy")
                 startActivity(intent)
-            } else if(radioMedium.isChecked){
+            } else if (radioMedium.isChecked) {
                 val intent = Intent(this, GameActivity::class.java)
-                intent.putExtra("name", etname.text.toString())
+                intent.putExtra("name", name)
                 intent.putExtra("difficulty", "Medium")
                 startActivity(intent)
-            } else if(radioHard.isChecked){
+            } else if (radioHard.isChecked) {
                 val intent = Intent(this, GameActivity::class.java)
-                intent.putExtra("name", etname.text.toString())
+                intent.putExtra("name", name)
                 intent.putExtra("difficulty", "Hard")
                 startActivity(intent)
             } else {

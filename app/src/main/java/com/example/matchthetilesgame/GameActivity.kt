@@ -11,30 +11,31 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 
 class GameActivity : AppCompatActivity() {
-    private var matchedCount=0
+
+    private var matchedCount = 0
     private var selected = -1
     private val isOpen = ArrayList<Boolean>()
-    private val TilesList = ArrayList<ImageView>()
-    private var randomArray = ArrayList<Int>()
-    private var size = 12
-    private var flag = 0
+    private val tilesList = ArrayList<ImageView>()
+    private var imageArray = ArrayList<Int>()
     private var movesLeft = 0
     private var diff = ""
     private var name = ""
     private lateinit var tvMoves: TextView
     private lateinit var tvName: TextView
     private lateinit var tvDifficulty: TextView
+    private var flag = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
 
         name = intent.getStringExtra("name")!!
         diff = intent.getStringExtra("difficulty")!!
-        movesLeft = when(diff){
+        movesLeft = when (diff) {
             "Easy" -> 30
             "Medium" -> 20
             "Hard" -> 15
-            else -> 30
+            else -> 0
         }
 
         tvName = findViewById(R.id.nameTextView)
@@ -44,30 +45,40 @@ class GameActivity : AppCompatActivity() {
         tvDifficulty = findViewById(R.id.difficultyTextView)
         tvDifficulty.text = "difficulty: $diff"
 
-        for(i in 1..(size/2)){
-            randomArray.add(i)
-            randomArray.add(i)
-        }
-        randomArray.shuffle()
 
-        for(i in 0..size) isOpen.add(false)
+        imageArray.add(R.drawable.img1)
+        imageArray.add(R.drawable.img2)
+        imageArray.add(R.drawable.img3)
+        imageArray.add(R.drawable.img4)
+        imageArray.add(R.drawable.img5)
+        imageArray.add(R.drawable.img6)
+        imageArray.add(R.drawable.img1)
+        imageArray.add(R.drawable.img2)
+        imageArray.add(R.drawable.img3)
+        imageArray.add(R.drawable.img4)
+        imageArray.add(R.drawable.img5)
+        imageArray.add(R.drawable.img6)
 
-        TilesList.add(findViewById(R.id.Tile1))
-        TilesList.add(findViewById(R.id.Tile2))
-        TilesList.add(findViewById(R.id.Tile3))
-        TilesList.add(findViewById(R.id.Tile4))
-        TilesList.add(findViewById(R.id.Tile5))
-        TilesList.add(findViewById(R.id.Tile6))
-        TilesList.add(findViewById(R.id.Tile7))
-        TilesList.add(findViewById(R.id.Tile8))
-        TilesList.add(findViewById(R.id.Tile9))
-        TilesList.add(findViewById(R.id.Tile10))
-        TilesList.add(findViewById(R.id.Tile11))
-        TilesList.add(findViewById(R.id.Tile12))
+        imageArray.shuffle()
 
-        for(i in 0 until size) TilesList[i].setImageResource(R.drawable.tile)
-        for(i in 0 until size){
-            TilesList[i].setOnClickListener{
+        tilesList.add(findViewById(R.id.Tile1))
+        tilesList.add(findViewById(R.id.Tile2))
+        tilesList.add(findViewById(R.id.Tile3))
+        tilesList.add(findViewById(R.id.Tile4))
+        tilesList.add(findViewById(R.id.Tile5))
+        tilesList.add(findViewById(R.id.Tile6))
+        tilesList.add(findViewById(R.id.Tile7))
+        tilesList.add(findViewById(R.id.Tile8))
+        tilesList.add(findViewById(R.id.Tile9))
+        tilesList.add(findViewById(R.id.Tile10))
+        tilesList.add(findViewById(R.id.Tile11))
+        tilesList.add(findViewById(R.id.Tile12))
+
+        for (i in 0..11) isOpen.add(false)
+
+        for (i in 0..11) tilesList[i].setImageResource(R.drawable.tile)
+        for (i in 0..11) {
+            tilesList[i].setOnClickListener {
                 onTileClicked(i)
             }
         }
@@ -76,92 +87,83 @@ class GameActivity : AppCompatActivity() {
 
 
     private fun onTileClicked(i: Int) {
-        if(isOpen[i]) return
+        if (isOpen[i] || flag) return
 
-        when(randomArray[i]){
-            1-> TilesList[i].setImageResource(R.drawable.img1)
-            2-> TilesList[i].setImageResource(R.drawable.img2)
-            3-> TilesList[i].setImageResource(R.drawable.img3)
-            4-> TilesList[i].setImageResource(R.drawable.img4)
-            5-> TilesList[i].setImageResource(R.drawable.img5)
-            6-> TilesList[i].setImageResource(R.drawable.img6)
-        }
         isOpen[i] = true
-        if(selected==-1){
+        tilesList[i].setImageResource(imageArray[i])
+
+        if (selected == -1) {
 
             selected = i
 
-        }
-        else {
+        } else {
             val j = selected
-            if(randomArray[i]!=randomArray[j]){
+            if (imageArray[i] == imageArray[j]) {
+
+                matchedCount += 2
+
+            } else {
                 val handler = Handler()
                 handler.postDelayed(
                     Runnable {
-                        TilesList[i].setImageResource(R.drawable.tile)
-                        isOpen[i]= false
-                        TilesList[j].setImageResource(R.drawable.tile)
-                        isOpen[j]= false
-                    },
-                    500
+                        tilesList[i].setImageResource(R.drawable.tile)
+                        isOpen[i] = false
+                        tilesList[j].setImageResource(R.drawable.tile)
+                        isOpen[j] = false
+                    }, 500
                 )
 
-            }
-            else{
-                matchedCount+=2
             }
             selected = -1
             movesLeft--
             tvMoves.text = "Moves left: $movesLeft"
         }
 
-
-        if(matchedCount==size) gameResult(true)
-        else if(movesLeft<=0) gameResult(false)
+        if (matchedCount == 12) gameResult(true)
+        else if (movesLeft == 0) gameResult(false)
     }
 
 
     private fun gameResult(result: Boolean) {
-        if(flag==1) return
-        if(result){
+        if (flag) return
+        flag = true
+        if (result) {
             val builder = AlertDialog.Builder(this)
             builder.setTitle("YOU WON!")
             builder.setMessage("Play Again?")
-            builder.setPositiveButton("Yes", DialogInterface.OnClickListener{ dialog, which->
+            builder.setPositiveButton("Yes", DialogInterface.OnClickListener { dialog, which ->
                 val intent = Intent(this, GameActivity::class.java)
                 intent.putExtra("name", name)
                 intent.putExtra("difficulty", diff)
                 startActivity(intent)
                 finish()
             })
-            builder.setNegativeButton("Exit", DialogInterface.OnClickListener{ dialog, which->
+            builder.setNegativeButton("Exit", DialogInterface.OnClickListener { dialog, which ->
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
                 finish()
             })
             val alertDialog: AlertDialog = builder.create()
             alertDialog.show()
-            flag=1
 
         } else {
             val builder = AlertDialog.Builder(this)
             builder.setTitle("YOU LOST!")
             builder.setMessage("Play Again?")
-            builder.setPositiveButton("Yes", DialogInterface.OnClickListener{ dialog, which->
+            builder.setPositiveButton("Yes", DialogInterface.OnClickListener { dialog, which ->
                 val intent = Intent(this, GameActivity::class.java)
                 intent.putExtra("name", name)
                 intent.putExtra("difficulty", diff)
                 startActivity(intent)
                 finish()
             })
-            builder.setNegativeButton("Exit", DialogInterface.OnClickListener{ dialog, which->
+            builder.setNegativeButton("Exit", DialogInterface.OnClickListener { dialog, which ->
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
                 finish()
             })
             val alertDialog: AlertDialog = builder.create()
             alertDialog.show()
-            flag=1
         }
     }
 
