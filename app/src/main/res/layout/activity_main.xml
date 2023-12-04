@@ -55,7 +55,7 @@
         android:layout_marginStart="18dp"
         android:text="Select Difficulty:"
         android:textSize="20sp"
-        android:textColor="@color/material_dynamic_tertiary10"
+        android:textColor="#FF1D1736"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
